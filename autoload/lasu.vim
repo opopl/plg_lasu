@@ -26,3 +26,5 @@ function! lasu#foldsections(lst, endpat)
 
 endfun
  
+function! lasu#help(topic)
+endf	
