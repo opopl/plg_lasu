@@ -721,5 +721,72 @@ function! lasu#is_in_skipped_region(lnum, regions)
 endfunction " }}}
 
 " vim600:fdm=marker
+"
+ 
+function! lasu#set_latex_efm()
+
+ let vars=[
+ 				\	'LASU_ShowallLines',
+ 				\	'LASU_IgnoreUnmatched',
+ 				\	]
+
+ call F_VarCheckExist(vars)
+
+	let pm = ( g:LASU_ShowallLines == 1 ? '+' : '-' )
+
+	setlocal efm=
+
+	if !g:LASU_ShowallLines
+		call LASU_IgnoreWarnings()
+	endif
+
+	setlocal efm+=%E!\ LaTeX\ %error:\ %m
+	setlocal efm+=%E!\ %m
+	setlocal efm+=%E%f:%l:\ %m
+
+	setlocal efm+=%+WLaTeX\ %.%#Warning:\ %.%#line\ %l%.%#
+	setlocal efm+=%+W%.%#\ at\ lines\ %l--%*\\d
+	setlocal efm+=%+WLaTeX\ %.%#Warning:\ %m
+
+	exec 'setlocal efm+=%'.pm.'Cl.%l\ %m'
+	exec 'setlocal efm+=%'.pm.'Cl.%l\ '
+	exec 'setlocal efm+=%'.pm.'C\ \ %m'
+	exec 'setlocal efm+=%'.pm.'C%.%#-%.%#'
+	exec 'setlocal efm+=%'.pm.'C%.%#[]%.%#'
+	exec 'setlocal efm+=%'.pm.'C[]%.%#'
+	exec 'setlocal efm+=%'.pm.'C%.%#%[{}\\]%.%#'
+	exec 'setlocal efm+=%'.pm.'C<%.%#>%m'
+	exec 'setlocal efm+=%'.pm.'C\ \ %m'
+	exec 'setlocal efm+=%'.pm.'GSee\ the\ LaTeX%m'
+	exec 'setlocal efm+=%'.pm.'GType\ \ H\ <return>%m'
+	exec 'setlocal efm+=%'.pm.'G\ ...%.%#'
+	exec 'setlocal efm+=%'.pm.'G%.%#\ (C)\ %.%#'
+	exec 'setlocal efm+=%'.pm.'G(see\ the\ transcript%.%#)'
+	exec 'setlocal efm+=%'.pm.'G\\s%#'
+	exec 'setlocal efm+=%'.pm.'O(%*[^()])%r'
+	exec 'setlocal efm+=%'.pm.'P(%f%r'
+	exec 'setlocal efm+=%'.pm.'P\ %\\=(%f%r'
+	exec 'setlocal efm+=%'.pm.'P%*[^()](%f%r'
+	exec 'setlocal efm+=%'.pm.'P(%f%*[^()]'
+	exec 'setlocal efm+=%'.pm.'P[%\\d%[^()]%#(%f%r'
+
+	if g:LASU_IgnoreUnmatched && !g:LASU_ShowallLines
+		setlocal efm+=%-P%*[^()]
+	endif
+
+	exec 'setlocal efm+=%'.pm.'Q)%r'
+	exec 'setlocal efm+=%'.pm.'Q%*[^()])%r'
+	exec 'setlocal efm+=%'.pm.'Q[%\\d%*[^()])%r'
+
+	if g:LASU_IgnoreUnmatched && !g:LASU_ShowallLines
+		setlocal efm+=%-Q%*[^()]
+	endif
+
+	if g:LASU_IgnoreUnmatched && !g:LASU_ShowallLines
+		setlocal efm+=%-G%.%#
+	endif
+ 
+endfunction
+ 
 
 	
